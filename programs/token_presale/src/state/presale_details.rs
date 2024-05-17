@@ -7,8 +7,14 @@ pub struct PresaleDetails {
     pub token_mint_address: Pubkey,
     // Total amount of presale tokens available in the presale
     pub token_amount: u64,
+    // Sold amount of tokens
+    pub sold_amount: u64,
+    // Mint buy lamports
+    pub min_buy_lamports: u64,
     // Quote token per presale token
     pub price_per_token: u64,
+    // token decimals
+    pub token_decimals: u32,
     // Presale is claimable
     pub is_claimable: bool,
     // Presale is buyable

@@ -14,12 +14,13 @@ pub fn buy_presale_tokens(
 ) -> Result<()> {
     let buyer = &ctx.accounts.buyer;
     let ref_by_account = &ctx.accounts.ref_by;
-    let presale_details_pda = &ctx.accounts.presale_details_pda;
+    let presale_details_pda = &mut ctx.accounts.presale_details_pda;
     let presale_authority_account = &ctx.accounts.presale_authority;
 
     let buyer_presale_details = &mut ctx.accounts.buyer_presale_details;
     require!(presale_authority_account.key == &presale_authority, TodoError::InvalidAuthority);
     require!(presale_details_pda.is_live == true, TodoError::SaleNotLive);
+    require!(lamport_amounts >= presale_details_pda.min_buy_lamports, TodoError::LowerThanMinBuy);
 
     if buyer_presale_details.ref_by != Pubkey::default() {
         msg!("buyer_presale_details.ref_by: {}", buyer_presale_details.ref_by);
@@ -67,13 +68,15 @@ pub fn buy_presale_tokens(
         ],
         &[]
     )?;
-    let token_decimals = 9;
     let amount_token_receive = lamport_amounts / presale_details_pda.price_per_token;
-    let amount_token_receive_with_decimals = amount_token_receive * (10u64).pow(token_decimals);
+    let amount_token_receive_with_decimals = amount_token_receive * (10u64).pow(presale_details_pda.token_decimals);
+    require!(presale_details_pda.sold_amount + amount_token_receive_with_decimals <= presale_details_pda.token_amount, TodoError::SoldOut);
 
     msg!("Amount of token receive: {}", amount_token_receive_with_decimals);
 
     buyer_presale_details.claimable_tokens += amount_token_receive_with_decimals;
+    presale_details_pda.sold_amount += amount_token_receive_with_decimals;
+
 
     msg!("Claimable tokens: {}", buyer_presale_details.claimable_tokens);
 

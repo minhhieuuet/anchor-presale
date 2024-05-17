@@ -9,6 +9,8 @@ pub fn create_presale(
     token_mint_address: Pubkey,
     token_amount: u64,
     price_per_token: u64,
+    token_decimals: u32,
+    min_buy_lamports: u64,
     ref_percentage: u64
 ) -> Result<()> {
 
@@ -19,6 +21,9 @@ pub fn create_presale(
     presale.token_mint_address = token_mint_address;
     presale.token_amount = token_amount;
     presale.price_per_token = price_per_token;
+    presale.sold_amount = 0;
+    presale.token_decimals = token_decimals;
+    presale.min_buy_lamports = min_buy_lamports;
     presale.ref_percentage = ref_percentage;
     presale.beneficiary = ctx.accounts.authority.key();
     presale.is_live = false;
@@ -43,7 +48,10 @@ pub fn create_presale(
 #[instruction(
     token_mint_address: Pubkey,
     token_amount: u64,
-    price_per_token: u64
+    price_per_token: u64,
+    token_decimals: u32,
+    min_buy_lamports: u64,
+    ref_percentage: u64
 )]
 pub struct CreatePresale<'info> {
     

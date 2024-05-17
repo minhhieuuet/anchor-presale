@@ -20,4 +20,8 @@ pub enum TodoError {
     SaleNotLive,
     #[msg("Sale is not claimable")]
     SaleNotClaimable,
+    #[msg("Lower than min buy")]
+    LowerThanMinBuy,
+    #[msg("Sold out")]
+    SoldOut
 }

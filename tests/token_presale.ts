@@ -161,7 +161,14 @@ describe("token_presale", () => {
 
 
     tx = await program.methods
-      .createPresale(mintKeypair.publicKey, new anchor.BN(1_000_000 * 10 ** 9), new anchor.BN(1000000000), REF_PERCENTAGE)
+      .createPresale(
+        mintKeypair.publicKey,
+        new anchor.BN(1_000_000 * 10 ** 9), // tokens amount
+        new anchor.BN(1000000000), // price lamport per tokens
+        9, // token_decimals
+        new anchor.BN(0), // min buy lamport
+        REF_PERCENTAGE
+      )
       .accounts({
         walletDetails: walletPDA,
         presaleDetails: presalePDA,
