@@ -11,7 +11,9 @@ pub fn create_presale(
     price_per_token: u64,
     token_decimals: u32,
     min_buy_lamports: u64,
-    ref_percentage: u64
+    ref_percentage: u64,
+    start_sale_at: i64,
+    end_sale_at: i64
 ) -> Result<()> {
 
     let presale = &mut ctx.accounts.presale_details;
@@ -25,6 +27,8 @@ pub fn create_presale(
     presale.token_decimals = token_decimals;
     presale.min_buy_lamports = min_buy_lamports;
     presale.ref_percentage = ref_percentage;
+    presale.start_sale_at = start_sale_at;
+    presale.end_sale_at = end_sale_at;
     presale.beneficiary = ctx.accounts.authority.key();
     presale.is_live = false;
     presale.is_claimable = false;
@@ -51,7 +55,9 @@ pub fn create_presale(
     price_per_token: u64,
     token_decimals: u32,
     min_buy_lamports: u64,
-    ref_percentage: u64
+    ref_percentage: u64,
+    start_sale_at: i64,
+    end_sale_at: i64
 )]
 pub struct CreatePresale<'info> {
     

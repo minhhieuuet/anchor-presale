@@ -23,5 +23,7 @@ pub enum TodoError {
     #[msg("Lower than min buy")]
     LowerThanMinBuy,
     #[msg("Sold out")]
-    SoldOut
+    SoldOut,
+    #[msg("Not in sale time")]
+    NotInSaleTime
 }

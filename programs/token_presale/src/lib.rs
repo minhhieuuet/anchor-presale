@@ -28,7 +28,9 @@ pub mod token_presale {
         price_per_token: u64,
         token_decimals: u32,
         min_buy_lamports: u64,
-        ref_percentage: u64
+        ref_percentage: u64,
+        start_sale_at: i64,
+        end_sale_at: i64
     ) -> Result<()> {
         
         create_presale::create_presale(
@@ -38,32 +40,38 @@ pub mod token_presale {
             price_per_token,
             token_decimals,
             min_buy_lamports,
-            ref_percentage
+            ref_percentage,
+            start_sale_at,
+            end_sale_at
         )
 
     }
 
-    // pub fn edit_presale(
-    //     ctx: Context<EditPresale>,
-    //     presale_identifier: u8,
-    //     token_mint_address: Pubkey,
-    //     quote_token_mint_address: Pubkey,
-    //     token_amount: u64,
-    //     max_token_amount_per_address: u64,
-    //     price_per_token: u64
-    // ) -> Result<()> {
+    pub fn edit_presale(
+        ctx: Context<EditPresale>,
+        presale_identifier: u8,
+        token_amount: u64,
+        price_per_token: u64,
+        token_decimals: u32,
+        ref_percentage: u64,
+        start_sale_at: i64,
+        end_sale_at: i64,
+        beneficiary: Pubkey
+    ) -> Result<()> {
         
-    //     edit_presale::edit_presale(
-    //         ctx,
-    //         presale_identifier,
-    //         token_mint_address,
-    //         quote_token_mint_address,
-    //         token_amount,
-    //         max_token_amount_per_address,
-    //         price_per_token
-    //     )
+        edit_presale::edit_presale(
+            ctx,
+            presale_identifier,
+            token_amount,
+            price_per_token,
+            token_decimals,
+            ref_percentage,
+            start_sale_at,
+            end_sale_at,
+            beneficiary
+        )
 
-    // }
+    }
 
     pub fn create_token(
         ctx: Context<CreateToken>, 

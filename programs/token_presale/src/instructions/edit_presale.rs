@@ -7,17 +7,25 @@ use crate::constants::PRESALE_SEED;
 pub fn edit_presale(
     ctx: Context<EditPresale>,
     _presale_identifier: u8,
-    token_mint_address: Pubkey,
     token_amount: u64,
-    price_per_token: u64
+    price_per_token: u64,
+    token_decimals: u32,
+    ref_percentage: u64,
+    start_sale_at: i64,
+    end_sale_at: i64,
+    beneficiary: Pubkey
 ) -> Result<()> {
     
     let presale = &mut ctx.accounts.presale_details;
 
     // Set the presale details to the parameters given
-    presale.token_mint_address = token_mint_address;
     presale.token_amount = token_amount;
     presale.price_per_token = price_per_token;
+    presale.token_decimals = token_decimals;
+    presale.ref_percentage = ref_percentage;
+    presale.start_sale_at = start_sale_at;
+    presale.end_sale_at = end_sale_at;
+    presale.beneficiary = beneficiary;
 
     msg!(
         "Edited the presale details for token: {}",
@@ -30,11 +38,13 @@ pub fn edit_presale(
 #[derive(Accounts)]
 #[instruction(
     presale_identifier: u8,
-    token_mint_address: Pubkey,
-    quote_token_mint_address: Pubkey,
     token_amount: u64,
-    max_token_amount_per_address: u64,
-    price_per_token: u64
+    price_per_token: u64,
+    token_decimals: u32,
+    ref_percentage: u64,
+    start_sale_at: i64,
+    end_sale_at: i64,
+    beneficiary: Pubkey
 )]
 pub struct EditPresale<'info> {
     

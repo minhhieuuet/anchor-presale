@@ -3,7 +3,10 @@ use crate::errors::TodoError;
 use crate::state::PresaleDetails;
 use crate::state::BuyerPresaleDetails;
 use crate::constants::{ PRESALE_SEED, BUYER_SEED };
-use solana_program::system_instruction;
+use solana_program::{
+    system_instruction,
+    clock::Clock,
+};
 
 pub fn buy_presale_tokens(
     ctx: Context<BuyPresaleTokens>,
@@ -12,6 +15,9 @@ pub fn buy_presale_tokens(
     presale_authority: Pubkey,
     ref_by: Pubkey
 ) -> Result<()> {
+    let clock = Clock::get()?;
+    let current_timestamp = clock.unix_timestamp;
+
     let buyer = &ctx.accounts.buyer;
     let ref_by_account = &ctx.accounts.ref_by;
     let presale_details_pda = &mut ctx.accounts.presale_details_pda;
@@ -21,6 +27,9 @@ pub fn buy_presale_tokens(
     require!(presale_authority_account.key == &presale_authority, TodoError::InvalidAuthority);
     require!(presale_details_pda.is_live == true, TodoError::SaleNotLive);
     require!(lamport_amounts >= presale_details_pda.min_buy_lamports, TodoError::LowerThanMinBuy);
+    if presale_details_pda.start_sale_at > 0 && presale_details_pda.end_sale_at > 0 {
+        require!(current_timestamp >= presale_details_pda.start_sale_at  && current_timestamp <= presale_details_pda.end_sale_at, TodoError::NotInSaleTime);
+    }
 
     if buyer_presale_details.ref_by != Pubkey::default() {
         msg!("buyer_presale_details.ref_by: {}", buyer_presale_details.ref_by);

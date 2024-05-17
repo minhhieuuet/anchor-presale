@@ -21,6 +21,10 @@ pub struct PresaleDetails {
     pub is_live: bool,
     // Ref percentage
     pub ref_percentage: u64,
+    // start sale at
+    pub start_sale_at: i64,
+    // end sale at
+    pub end_sale_at: i64,
     // Beneficiary of the presale
     pub beneficiary: Pubkey,
     // Identifier for finding the PDA

@@ -18,6 +18,8 @@ import { ASSOCIATED_PROGRAM_ID } from '@project-serum/anchor/dist/cjs/utils/toke
 import { bs58 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 // BAB metadata - https://gateway.pinata.cloud/ipfs/QmbYunxDx4cpsf8KWdmDyiS8E41HW1QdBDLww3HUAyUgPP?_gl=1*1fecquc*_ga*MjA5NDM1ODAyMy4xNjU4MzI5NzY1*_ga_5RMPXG14TE*MTY3NTQyNDMxNC40LjEuMTY3NTQyNTU2OS4zNS4wLjA.
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import moment from "moment";
+
 describe("token_presale", () => {
   // Configure the client to use the local cluster.
 
@@ -159,15 +161,17 @@ describe("token_presale", () => {
       .rpc();
     console.log("Initialized wallet!");
 
-
+    const currentUnix = moment().unix();
     tx = await program.methods
       .createPresale(
         mintKeypair.publicKey,
         new anchor.BN(1_000_000 * 10 ** 9), // tokens amount
         new anchor.BN(1000000000), // price lamport per tokens
         9, // token_decimals
-        new anchor.BN(0), // min buy lamport
-        REF_PERCENTAGE
+        new anchor.BN(LAMPORTS_PER_SOL/ 10), // min buy lamport
+        REF_PERCENTAGE,
+        new anchor.BN(currentUnix),
+        new anchor.BN(currentUnix + 3600),
       )
       .accounts({
         walletDetails: walletPDA,
