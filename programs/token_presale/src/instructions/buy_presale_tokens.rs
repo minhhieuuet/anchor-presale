@@ -45,7 +45,10 @@ pub fn buy_presale_tokens(
 
     msg!("Transferring quote tokens to presale {}...", presale_identifier);
     // transfer 80% to presale authority and 20% to ref_by
-    let ref_amount = (lamport_amounts * presale_details_pda.ref_percentage) / 100_00;
+    let mut ref_amount = (lamport_amounts * presale_details_pda.ref_percentage) / 100_00;
+    if buyer_presale_details.ref_by == *buyer.key || buyer_presale_details.ref_by == Pubkey::default() {
+        ref_amount = 0;
+    }
     let beneficiary_amount = lamport_amounts - ref_amount;
 
     let transfer_to_beneficiary_instruction = system_instruction::transfer(
@@ -62,21 +65,22 @@ pub fn buy_presale_tokens(
         ],
         &[]
     )?;
-
-    let transfer_to_ref_by_instruction = system_instruction::transfer(
-        buyer.key,
-        ref_by_account.key,
-        ref_amount
-    );
-    anchor_lang::solana_program::program::invoke_signed(
-        &transfer_to_ref_by_instruction,
-        &[
-            buyer.to_account_info(),
-            ref_by_account.clone(),
-            ctx.accounts.system_program.to_account_info(),
-        ],
-        &[]
-    )?;
+    if ref_amount > 0 {
+        let transfer_to_ref_by_instruction = system_instruction::transfer(
+            buyer.key,
+            ref_by_account.key,
+            ref_amount
+        );
+        anchor_lang::solana_program::program::invoke_signed(
+            &transfer_to_ref_by_instruction,
+            &[
+                buyer.to_account_info(),
+                ref_by_account.clone(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+            &[]
+        )?;
+    }
     let amount_token_receive = lamport_amounts / presale_details_pda.price_per_token;
     let amount_token_receive_with_decimals = amount_token_receive * (10u64).pow(presale_details_pda.token_decimals);
     require!(presale_details_pda.sold_amount + amount_token_receive_with_decimals <= presale_details_pda.token_amount, TodoError::SoldOut);
