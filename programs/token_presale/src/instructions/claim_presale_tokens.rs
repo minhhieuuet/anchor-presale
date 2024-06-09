@@ -54,7 +54,8 @@ pub struct ClaimPresaleTokens<'info> {
     #[account(mut)]
     pub mint_account: Account<'info, token::Mint>,
     #[account(
-        mut,
+        init_if_needed,
+        payer = buyer,
         associated_token::mint = mint_account,
         associated_token::authority = buyer,
     )]
