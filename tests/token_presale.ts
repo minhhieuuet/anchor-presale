@@ -179,6 +179,7 @@ describe("token_presale", () => {
         authority: payer.publicKey,
         systemProgram: web3.SystemProgram.programId,
       })
+      .signers([payer])
       .rpc();
 
     console.log("Created presale");
